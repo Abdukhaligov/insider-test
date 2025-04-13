@@ -12,8 +12,7 @@ class Game extends Model
     protected $table = 'matches';
 
     protected $fillable = [
-        'season_id', 'week', 'home_team_id', 'away_team_id',
-        'home_team_score', 'away_team_score', 'played', 'scheduled_at', 'venue_id'
+        'season_id', 'week', 'home_team_id', 'away_team_id', 'home_team_score', 'away_team_score', 'status'
     ];
 
     protected $casts = [
@@ -28,17 +27,12 @@ class Game extends Model
 
     public function homeTeam(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(SeasonTeam::class, 'home_team_id');
+        return $this->belongsTo(Team::class, 'home_team_id');
     }
 
     public function awayTeam(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(SeasonTeam::class, 'away_team_id');
-    }
-
-    public function venue(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Venue::class);
+        return $this->belongsTo(Team::class, 'away_team_id');
     }
 
     // Business logic for handling match results

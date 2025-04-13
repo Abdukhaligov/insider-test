@@ -10,7 +10,7 @@ class SeasonTeam extends Model
     use HasFactory;
 
     protected $fillable = [
-        'season_id', 'team_id', 'power', 'points',
+        'season_id', 'team_id', 'strength', 'points',
         'won', 'drawn', 'lost', 'goals_for', 'goals_against'
     ];
 

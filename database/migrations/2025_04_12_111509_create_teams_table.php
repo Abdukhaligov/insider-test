@@ -14,8 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('country')->nullable();
-            $table->foreignId('home_venue_id')->nullable()->constrained('venues');
-            $table->string('logo_url')->nullable();
             $table->timestamps();
         });
     }

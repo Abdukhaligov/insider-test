@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('seasons', function (Blueprint $table) {
             $table->id();
+            $table->smallInteger('week')->default(1);
             $table->date('date');
         });
     }

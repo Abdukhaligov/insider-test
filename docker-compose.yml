@@ -23,22 +23,7 @@ services:
             - ./:/var/www/html
         networks:
             - laravel-net
-        depends_on:
-            - db
         entrypoint: sh -c "apache2 -D FOREGROUND"
-
-    db:
-        container_name: db
-        image: mysql:8.0
-        ports:
-            - "${DB_PORT:-3306}:3306"
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: laravel
-        volumes:
-            - db_data:/var/lib/mysql
-        networks:
-            - laravel-net
 
 networks:
     laravel-net:

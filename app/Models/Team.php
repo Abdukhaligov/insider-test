@@ -9,16 +9,11 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'country', 'logo_url', 'home_venue_id'];
+    protected $fillable = ['name', 'country'];
 
     public function seasonTeams(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(SeasonTeam::class);
-    }
-
-    public function homeVenue(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Venue::class, 'home_venue_id');
     }
 
     public function seasons()

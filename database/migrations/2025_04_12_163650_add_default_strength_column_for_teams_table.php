@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('venues', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('city')->nullable();
-            $table->string('address')->nullable();
-            $table->integer('capacity')->nullable();
-            $table->timestamps();
+        Schema::table('teams', function (Blueprint $table) {
+            $table->decimal('strength')->after('name')->default(0);
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('venues');
+        Schema::table('teams', function (Blueprint $table) {
+            $table->dropColumn('strength');
+        });
     }
 };

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('season_id')->constrained()->onDelete('cascade');
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
-            $table->decimal('power', 8, 2)->default(0);
+            $table->decimal('strength')->default(0);
             $table->integer('points')->default(0);
             $table->integer('won')->default(0);
             $table->integer('drawn')->default(0);
@@ -28,6 +28,8 @@ return new class extends Migration
             $table->unique(['season_id', 'team_id']);
             $table->index(['season_id']);
             $table->index(['team_id']);
+            
+            $table->timestamps();
         });
     }
 
