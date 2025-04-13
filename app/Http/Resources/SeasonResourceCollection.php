@@ -16,7 +16,8 @@ class SeasonResourceCollection extends ResourceCollection
                 'id' => $season->id,
                 'date' => $season->date->format('Y/m'),
                 'week' => $season->week,
-                'weeks' => $weeks
+                'weeks' => $weeks,
+                'matches' => $season->matches->count(),
             ];
         });
     }

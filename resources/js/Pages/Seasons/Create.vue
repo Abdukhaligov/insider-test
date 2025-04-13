@@ -15,13 +15,18 @@
         </button>
       </div>
     </div>
-    
-    <div class="row mb-4" v-for="(selectedTeam, index) in selectedTeams" :key="index">
-      <div class="col-md-10">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <div class="row g-3">
-              <div class="col-12 col-sm-8">
+
+    <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4">
+      <div v-for="(selectedTeam, index) in selectedTeams" :key="index" class="col mb-4">
+        <div class="card shadow-lg border-0 transition-all hover-shadow-lg h-100">
+          
+          <div class="remove-button-container">
+            <button type="button" class="btn btn-danger btn-sm rounded-circle px-2" @click="removeTeam(selectedTeam)">X</button>
+          </div>
+          
+          <div class="card-body py-4">
+            <div class="d-grid row">
+              <div class="col-7">
                 <label class="form-label">Team</label>
                 <select
                     class="form-control"
@@ -35,7 +40,7 @@
                 </select>
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-5">
                 <label class="form-label">Power</label>
                 <input
                     v-model="selectedTeam.strength"
@@ -45,12 +50,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="col-md-2 align-self-center">
-        <div class="float-right">
-          <button type="button" class="btn btn-danger" @click="removeTeam(selectedTeam)">Remove</button>
         </div>
       </div>
     </div>
@@ -141,3 +140,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.remove-button-container {
+  position: absolute;
+  right: -10px;
+  top: -15px;
+}
+.remove-button-container button {
+ font-size: 10px;
+}
+</style>

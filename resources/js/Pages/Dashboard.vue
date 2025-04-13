@@ -22,7 +22,7 @@
               <div class="d-grid row">
                 <div class="col-8">
                   <router-link :to="'/seasons/' + season.id" class="btn btn-outline-primary btn-lg py-2">
-                    Matches
+                    {{ season.matches }} Matches
                   </router-link>
                 </div>
                 

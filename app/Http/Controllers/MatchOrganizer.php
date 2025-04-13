@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NoMatchesFoundException;
 use App\Models\Game;
 use App\Models\Season;
 use App\Models\SeasonTeam;
@@ -34,6 +35,41 @@ class MatchOrganizer
         ]);
 
         return $season->teams()->createMany($teamData)->shuffle();
+    }
+
+    /**
+     * @throws NoMatchesFoundException
+     */
+    public static function simulateWeek(Season $season)
+    {
+        $matches = $season->matches()
+            ->with('homeTeam', 'awayTeam')
+            ->where('week', $season->week)
+            ->get();
+
+        if ($matches->isEmpty()) {
+            throw new NoMatchesFoundException('Current week has no matches to simulate');
+        }
+
+        return DB::transaction(function () use ($season, $matches) {
+            $teamStats = [];
+            $season->load('teams');
+
+            foreach ($matches as $match) {
+                $scores = MatchOrganizer::calculateMatchScore(
+                    $match->homeTeam->strength,
+                    $match->awayTeam->strength
+                );
+
+                MatchOrganizer::updateResults($match, $scores);
+                MatchOrganizer::accumulateTeamStats($teamStats, $match, $scores);
+            }
+
+            MatchOrganizer::applyTeamStatistics($season, $teamStats);
+            $season->increment('week');
+
+            return $season->week;
+        });
     }
 
     public static function scheduleMatches(Season $season, Collection $teams): void

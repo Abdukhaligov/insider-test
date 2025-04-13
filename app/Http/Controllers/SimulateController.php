@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NoMatchesFoundException;
 use App\Models\Season;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -11,42 +12,39 @@ class SimulateController extends Controller
 {
     public function currentWeek(Season $season): JsonResponse
     {
-        $matches = $season->matches()
-            ->with('homeTeam', 'awayTeam')
-            ->where('week', $season->week)
-            ->get();
-
-        if ($matches->isEmpty()) {
-            return response()->json(
-                ['error' => 'Current week has no matches to simulate'],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
         try {
-            return DB::transaction(function () use ($season, $matches) {
-                $teamStats = [];
-                $season->load('teams');
-
-                foreach ($matches as $match) {
-                    $scores = MatchOrganizer::calculateMatchScore(
-                        $match->homeTeam->strength,
-                        $match->awayTeam->strength
-                    );
-
-                    MatchOrganizer::updateResults($match, $scores);
-                    MatchOrganizer::accumulateTeamStats($teamStats, $match, $scores);
-                }
-
-                MatchOrganizer::applyTeamStatistics($season, $teamStats);
-                $season->increment('week');
-
+            return DB::transaction(function () use ($season) {
                 return response()->json([
                     'message' => 'Week simulated successfully',
-                    'new_week' => $season->week
+                    'new_week' => MatchOrganizer::simulateWeek($season),
                 ], Response::HTTP_OK);
             });
         } catch (\Exception $e) {
+            return $this->handleError($e);
+        }
+    }
+
+    public function allWeeks(Season $season): JsonResponse
+    {
+        DB::beginTransaction();
+
+        try {
+            $weeksSimulated = 0;
+
+            while (true) {
+                MatchOrganizer::simulateWeek($season);
+                $weeksSimulated++;
+            }
+        } catch (NoMatchesFoundException $e) {
+            DB::commit();
+
+            return response()->json([
+                'message' => 'All remaining weeks simulated successfully',
+                'weeks_simulated' => $weeksSimulated,
+                'current_week' => $season->week
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback on any error
             return $this->handleError($e);
         }
     }

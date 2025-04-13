@@ -13,6 +13,11 @@
           </button>
         </div>
         <div class="float-right mr-4">
+          <button :disabled="currentWeek > weeks.length" @click="playAllWeeks" type="button" class="btn btn-primary">
+            Play All Weeks
+          </button>
+        </div>
+        <div class="float-right mr-4">
           <button @click="resetData" type="button" class="btn btn-primary">
             Reset Data
           </button>
@@ -81,6 +86,15 @@ export default {
     },
     playCurrentWeek() {
       axios.get(`/api/seasons/${this.seasonId}/simulate/current-week`)
+          .then((response) => {
+            this.getSeasons(this.seasonId);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    },
+    playAllWeeks() {
+      axios.get(`/api/seasons/${this.seasonId}/simulate/all-weeks`)
           .then((response) => {
             this.getSeasons(this.seasonId);
           })
