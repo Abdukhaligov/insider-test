@@ -29,8 +29,4 @@ class Season extends Model
     {
         return $this->hasMany(Game::class);
     }
-    public function allTeams(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Team::class, 'season_teams');
-    }
 }
