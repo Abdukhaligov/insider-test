@@ -11,6 +11,6 @@ Route::apiResources([
 
 Route::prefix('seasons/{season}/simulate')->group(function () {
     Route::get('current-week', [SimulateController::class, 'currentWeek']);
-    Route::get('reset', [SimulateController::class, 'reset']);
     Route::get('all-weeks', [SimulateController::class, 'allWeeks']);
+    Route::get('reset', [SimulateController::class, 'reset']);
 });

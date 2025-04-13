@@ -2,47 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SeasonTeamsRequest;
 use App\Http\Resources\SeasonResource;
 use App\Models\Season;
+use App\Services\SeasonServiceInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SeasonController extends Controller
 {
-    public function index(): JsonResponse
+    public function __construct(protected readonly SeasonServiceInterface $seasonService)
     {
-        return response()->json(SeasonResource::collection(Season::all()));
+        //
     }
 
-    public function store(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        try {
-            return DB::transaction(function () use ($request) {
-                $season = Season::create(['date' => now()]);
-                $teams = MatchOrganizer::registerTeams($season, $request->input('teams'));
+        return response()->json(SeasonResource::collection($this->seasonService->getAll()));
+    }
 
-                MatchOrganizer::scheduleMatches($season, $teams);
+    public function store(SeasonTeamsRequest $request): JsonResponse
+    {
+        $season = $this->seasonService->create($request->toDTOs());
 
-                return response()->json(['id' => $season->id]);
-            });
-        } catch (\Exception $e) {
-            return $this->handleError($e);
-        }
+        return response()->json(SeasonResource::make($season));
     }
 
     public function show(Season $season): JsonResponse
     {
         return response()->json(SeasonResource::make($season));
-    }
-
-    public function update(Request $request, Season $season)
-    {
-        // Implementation remains unchanged
-    }
-
-    public function destroy(Season $season)
-    {
-        // Implementation remains unchanged
     }
 }

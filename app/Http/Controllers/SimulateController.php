@@ -4,79 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\NoMatchesFoundException;
 use App\Models\Season;
+use App\Services\SeasonServiceInterface;
+use App\Services\SimulateServiceInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class SimulateController extends Controller
 {
+    public function __construct(protected readonly SeasonServiceInterface $seasonService, 
+                                protected readonly SimulateServiceInterface $simulateService)
+    {
+        //
+    }
+
     public function currentWeek(Season $season): JsonResponse
     {
         try {
-            return DB::transaction(function () use ($season) {
-                return response()->json([
-                    'message' => 'Week simulated successfully',
-                    'new_week' => MatchOrganizer::simulateWeek($season),
-                ], Response::HTTP_OK);
-            });
-        } catch (\Exception $e) {
-            return $this->handleError($e);
+            $this->simulateService->currentWeek($season);
+        } catch (NoMatchesFoundException $ignored) {
+            return response()->json([
+                'message' => 'No matches found for simulation'
+            ], status: Response::HTTP_CONFLICT);
         }
+
+        return response()->json(status: Response::HTTP_NO_CONTENT);
     }
 
     public function allWeeks(Season $season): JsonResponse
     {
-        DB::beginTransaction();
+        $weeksSimulated = $this->simulateService->allWeeks($season);
 
-        try {
-            $weeksSimulated = 0;
-
-            while (true) {
-                MatchOrganizer::simulateWeek($season);
-                $weeksSimulated++;
-            }
-        } catch (NoMatchesFoundException $e) {
-            DB::commit();
-
-            return response()->json([
-                'message' => 'All remaining weeks simulated successfully',
-                'weeks_simulated' => $weeksSimulated,
-                'current_week' => $season->week
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback on any error
-            return $this->handleError($e);
-        }
+        return response()->json([
+            'message' => 'All remaining weeks simulated successfully',
+            'weeks_simulated' => $weeksSimulated
+        ], Response::HTTP_OK);
     }
 
     public function reset(Season $season): JsonResponse
     {
-        try {
-            return DB::transaction(function () use ($season) {
-                $season->matches()->update([
-                    'home_team_score' => null,
-                    'away_team_score' => null,
-                    'status' => 'scheduled'
-                ]);
+        $this->seasonService->reset($season);
 
-                $season->teams()->update([
-                    'points' => 0,
-                    'won' => 0,
-                    'lost' => 0,
-                    'drawn' => 0,
-                    'goals_for' => 0,
-                    'goals_against' => 0,
-                ]);
-
-                $season->update(['week' => 1]);
-
-                return response()->json(
-                    ['message' => 'Season reset to initial state'],
-                    Response::HTTP_OK
-                );
-            });
-        } catch (\Exception $e) {
-            return $this->handleError($e);
-        }
+        return response()->json(status: Response::HTTP_NO_CONTENT);
     }
 }

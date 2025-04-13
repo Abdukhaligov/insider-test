@@ -2,33 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
-use Illuminate\Http\{Request, JsonResponse};
+use App\Http\Resources\TeamResource;
+use App\Repositories\TeamRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 
 class TeamController extends Controller
 {
+    public function __construct(protected readonly TeamRepositoryInterface $teamRepository)
+    {
+        //
+    }
+
     public function index(): JsonResponse
     {
-        return response()->json(Team::all());
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function show(Team $team)
-    {
-        //
-    }
-
-    public function update(Request $request, Team $team)
-    {
-        //
-    }
-
-    public function destroy(Team $team)
-    {
-        //
+        return response()->json(TeamResource::collection($this->teamRepository->all()));
     }
 }
