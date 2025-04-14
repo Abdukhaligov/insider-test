@@ -30,7 +30,7 @@ class MatchServiceTest extends TestCase
         parent::tearDown();
     }
 
-    public function testShouldProcessReturnsTrueWhenCompletedAndScoresChanged()
+    public function test_should_process_returns_true_when_completed_and_scores_changed()
     {
         $oldMatch = new Game(['status' => 'completed', 'home_team_score' => 1, 'away_team_score' => 0]);
         $updatedMatch = new Game(['status' => 'completed', 'home_team_score' => 2, 'away_team_score' => 1]);
@@ -39,7 +39,7 @@ class MatchServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testShouldProcessReturnsFalseWhenNotCompleted()
+    public function test_should_process_returns_false_when_not_completed()
     {
         $oldMatch = new Game(['status' => 'completed', 'home_team_score' => 1, 'away_team_score' => 0]);
         $updatedMatch = new Game(['status' => 'pending', 'home_team_score' => 2, 'away_team_score' => 1]);
@@ -48,7 +48,7 @@ class MatchServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testCalculateTeamDeltaAddsWin()
+    public function test_calculate_team_delta_adds_win()
     {
         $statsDelta = [];
         $this->invokePrivateMethod($this->service, 'calculateTeamDelta', [
@@ -64,7 +64,7 @@ class MatchServiceTest extends TestCase
         $this->assertEquals(2, $statsDelta[1]->goalsFor);
     }
 
-    public function testProcessMatchDeltaUpdatesStatsCorrectly()
+    public function test_process_match_delta_updates_stats_correctly()
     {
         $oldMatch = new Game([
             'home_team_id' => 1,
@@ -90,7 +90,7 @@ class MatchServiceTest extends TestCase
         $this->assertEquals(3, $statsDelta[2]->points);
     }
 
-    public function testCalculateTeamDeltaSkipsNullTeamId()
+    public function test_calculate_team_delta_skips_null_team_id()
     {
         $statsDelta = [];
         $this->invokePrivateMethod($this->service, 'calculateTeamDelta', [
