@@ -26,7 +26,7 @@ class MatchOrganizerServiceTest extends TestCase
     }
 
     /** @dataProvider teamCountProvider */
-    public function testGeneratesCorrectNumberOfMatches(int $teamCount, int $expectedTotalMatches): void
+    public function test_generates_correct_number_of_matches(int $teamCount, int $expectedTotalMatches): void
     {
         $teams = Collection::times($teamCount, fn($i) => (object)['team_id' => $i]);
 
@@ -46,7 +46,7 @@ class MatchOrganizerServiceTest extends TestCase
         ];
     }
 
-    public function testHomeAwayAlternatesBasedOnWeekParity(): void
+    public function test_home_away_alternates_based_on_week_parity(): void
     {
         $teams = new Collection([(object)['team_id' => 1], (object)['team_id' => 2]]);
 
@@ -64,7 +64,7 @@ class MatchOrganizerServiceTest extends TestCase
         $this->service->generateSchedule($this->season, $teams);
     }
 
-    public function testSkipMatchesWithSameTeam(): void
+    public function test_skip_matches_with_same_team(): void
     {
         $teams = new Collection([
             (object)['team_id' => 1],
@@ -80,7 +80,7 @@ class MatchOrganizerServiceTest extends TestCase
         $this->service->generateSchedule($this->season, $teams);
     }
 
-    public function testTeamRotationLogic(): void
+    public function test_team_rotation_logic(): void
     {
         $teams = new Collection([
             (object)['team_id' => 1],
