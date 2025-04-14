@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
+ * @property \Illuminate\Database\Eloquent\Collection $teams
  */
 class Season extends Model
 {
