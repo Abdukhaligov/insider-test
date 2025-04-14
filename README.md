@@ -16,3 +16,15 @@ php artisan migrate --seed
 ```bash
 docker compose up
 ```
+
+### Main Page
+![alt text](/screenshots/main-page.png)
+
+### Season Create Page
+![alt text](/screenshots/season-create-page.png)
+
+### Season View Page
+![alt text](/screenshots/season-view-page.png)
+
+### Week Matched Edit section
+![alt text](/screenshots/week-matches-edit.png)
