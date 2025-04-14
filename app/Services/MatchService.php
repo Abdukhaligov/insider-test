@@ -25,6 +25,9 @@ final readonly class MatchService implements MatchServiceInterface
         DB::transaction(function () use ($season, $matchesData) {
             // Get existing matches data
             $matchIds = collect($matchesData)->pluck('id');
+            $validIds = $season->matches()->where('status', 'completed')->pluck('id')->toArray();
+            $matchIds = $matchIds->filter(fn ($matchId) => in_array($matchId, $validIds));
+            
             $oldMatches = $this->matchRepository->getByIds($matchIds);
 
             // Update matches
