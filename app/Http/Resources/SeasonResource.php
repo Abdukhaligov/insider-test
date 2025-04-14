@@ -13,9 +13,26 @@ class SeasonResource extends JsonResource
         return [
             'id' => $this->id,
             'week' => $this->week,
-            'teams' => $this->teams->pluck('team')->toArray(),
-            'stats' => $this->teams->sortBy('points', descending: true)->toArray(),
-            'matches' => $this->matches->load(['homeTeam', 'awayTeam'])->toArray(),
+            'stats' => $this->teams->load(['team'])->sortByDesc('points')->values()->toArray(),
+            'weeks' => $this->matches
+                ->load(['homeTeam', 'awayTeam'])
+                ->groupBy('week')
+                ->map(function ($matches) {
+                    return [
+                        'matches' => $matches->map(function ($match) {
+                            return [
+                                'id' => $match->id,
+                                'week' => $match->week,
+                                'home_team' => $match->homeTeam->name,
+                                'home_team_id' => $match->home_team_id,
+                                'away_team' => $match->awayTeam->name,
+                                'away_team_id' => $match->away_team_id,
+                                'away_team_score' => $match->away_team_score,
+                                'home_team_score' => $match->home_team_score,
+                            ];
+                        })->values(),
+                    ];
+                })->values(),
         ];
     }
 

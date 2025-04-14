@@ -45,6 +45,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\PredictionServiceInterface::class,
             \App\Services\PredictionService::class
         );
+        
+        $this->app->bind(
+            \App\Services\MatchServiceInterface::class,
+            \App\Services\MatchService::class
+        );
     }
 
     /**

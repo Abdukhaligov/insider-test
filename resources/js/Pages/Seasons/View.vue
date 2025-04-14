@@ -41,17 +41,27 @@
                 <h5 class="card-title mb-0 float-left">Week {{ index + 1 }}</h5>
                 <span v-if="currentWeek == (index + 1)" class="card-text ml-3">(current)</span>
               </div>
-              <button v-if="currentWeek > index + 1" type="button" class="btn btn-secondary float-right btn-sm py-0 px-1">
+              <button v-if="currentWeek > index + 1 && !week.edit" type="button" @click="editWeek(index, week)" class="btn btn-secondary float-right btn-sm py-0 px-1">
                 Edit
+              </button>
+              <button v-if="week.edit" type="button" @click="saveWeek(index)" class="btn btn-success float-right btn-sm py-0 px-1">
+                Save
               </button>
             </div>
 
             <div class="mb-3 mt-3">
               <div v-for="(match, matchIndex) in week.matches" :key="matchIndex"
                    class="d-flex mb-1">
-                <span class="col-5 p-0 m-0 pl-2 pr-2">{{ match.home_team.name }}</span>
-                <span class="col-2 p-0 m-0">{{ match.home_team_score }}-{{ match.away_team_score }}</span>
-                <span class="col-5 p-0 m-0">{{ match.away_team.name }}</span>
+                <span class="col-5 p-0 m-0 pl-2 pr-2">{{ match.home_team }}</span>
+                
+                <input v-if="week.edit" style="width: 25px" :value="match.home_team_score" v-model="weekMatchesForm[index][matchIndex].home_team_score">
+                <span v-if="week.edit">-</span>
+                <input v-if="week.edit" style="width: 25px" :value="match.away_team_score" v-model="weekMatchesForm[index][matchIndex].away_team_score">
+
+                <span v-if="!week.edit" class="col-2 p-0 m-0">
+                  {{ match.home_team_score }}-{{ match.away_team_score }}
+                </span>
+                <span class="col-5 p-0 m-0">{{ match.away_team }}</span>
               </div>
             </div>
           </div>
@@ -71,9 +81,10 @@ export default {
   components: {Statistics, Predictions},
   data() {
     return {
+      weekMatchesForm: {},
       teams: [],
-      matches: [],
       stats: [],
+      weeks: [],
       currentWeek: 1,
       seasonId: null,
       predictions: [],
@@ -85,18 +96,21 @@ export default {
     await this.getSeasons(route.params.id);
   },
   methods: {
-    groupBy(list, keyGetter) {
-      const map = [];
-      list.forEach((item) => {
-        const key = keyGetter(item);
-        const collection = map[key];
-        if (!collection) {
-          map[key] = [item];
-        } else {
-          collection.push(item);
-        }
-      });
-      return map;
+    editWeek(index, week) {
+      this.weekMatchesForm[index] = week.matches
+      
+      this.weeks[index].edit = true;
+    },
+    async saveWeek(index) {
+      await axios.post(`/api/seasons/${this.seasonId}/update-matches`, this.weekMatchesForm[index])
+          .then((response) => {
+            this.getSeasons(this.seasonId);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      
+      this.weeks[index].edit = false;
     },
     playCurrentWeek() {
       axios.get(`/api/seasons/${this.seasonId}/simulate/current-week`)
@@ -131,27 +145,12 @@ export default {
         this.currentWeek = data.week;
         this.teams = data.teams;
         this.stats = data.stats;
-        
+        this.weeks = data.weeks;
         this.predictions = (await axios.get(`/api/seasons/${id}/predictions`)).data;
-        this.matches = this.groupBy(data.matches, x => x.week - 1);
       } catch (error) {
         console.log(error);
       }
     }
   },
-  computed: {
-    weeks() {
-      return this.matches.map(week => {
-        const matches = week.map(match => {
-          return {
-            ...match,
-            home: this.teams.find(team => team.id === match.home_team_id),
-            away: this.teams.find(team => team.id === match.away_team_id)
-          }
-        });
-        return {...week, matches}
-      })
-    }
-  }
 }
 </script>

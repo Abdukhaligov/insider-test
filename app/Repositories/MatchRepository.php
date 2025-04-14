@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTO\MatchStatusDTO;
 use App\Models\Game;
 use App\Models\Season;
+use Illuminate\Database\Eloquent\Collection;
 
 final readonly class MatchRepository implements MatchRepositoryInterface
 {
@@ -25,5 +26,20 @@ final readonly class MatchRepository implements MatchRepositoryInterface
             'away_team_id' => $awayTeamId,
             'week' => $week,
         ]);
+    }
+
+    public function getByIds(iterable $ids): Collection
+    {
+        return Game::findMany($ids);
+    }
+
+    public function upsertScores(array $matches): void
+    {
+        foreach ($matches as $match) {
+            Game::find($match['id'])->update([
+                'home_team_score' => $match['home_team_score'],
+                'away_team_score' => $match['away_team_score'],
+            ]);
+        }
     }
 }

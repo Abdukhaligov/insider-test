@@ -16,3 +16,4 @@ Route::prefix('seasons/{season}/simulate')->group(function () {
 });
 
 Route::get('seasons/{season}/predictions', [SeasonController::class, 'predictions']);
+Route::post('seasons/{season}/update-matches', [SeasonController::class, 'updateMatches']);
