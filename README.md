@@ -26,5 +26,5 @@ docker compose up
 ### Season View Page
 ![alt text](/screenshots/season-view-page.png)
 
-### Week Matched Edit section
+### Week Matches Edit section
 ![alt text](/screenshots/week-matches-edit.png)
