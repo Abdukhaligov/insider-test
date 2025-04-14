@@ -22,36 +22,17 @@
         </button>
       </div>
     </div>
-    
-    <div class="col-6 mb-4">
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>Team</th>
-          <th>PTS</th>
-          <th>P</th>
-          <th>W</th>
-          <th>D</th>
-          <th>L</th>
-          <th>GD</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="stat in stats" :key="stat.id">
-          <td>{{ stat.team.name }}</td>
-          <td>{{ stat.points }}</td>
-          <td>{{ stat.won + stat.lost + stat.drawn }}</td>
-          <td>{{ stat.won }}</td>
-          <td>{{ stat.drawn }}</td>
-          <td>{{ stat.lost }}</td>
-          <td>{{ stat.goal_difference }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="container col-12">
 
+    <div class="col-12 p-0 m-0 row row-cols-1 row-cols-md-1 row-cols-lg-2">
+      <div class="col-lg-6 mb-4">
+        <Statistics :stats="stats"/>
+      </div>
+
+      <div class="col-lg-6 mb-4">
+        <Predictions :predictions="predictions" />
+      </div>
+    </div>
+    <div class="container col-12">
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col mb-3" v-for="(week, index) in weeks" :key="index">
           <div class="card shadow-sm">
@@ -83,11 +64,11 @@
 <script>
 import {useRoute} from 'vue-router'
 import axios from 'axios';
-import HomeView from "../../views/HomeView.vue";
-import SimulateView from "../../views/SimulateView.vue";
+import Predictions from "../../Components/Predictions.vue";
+import Statistics from "../../Components/Statistics.vue";
 
 export default {
-  components: {SimulateView, HomeView},
+  components: {Statistics, Predictions},
   data() {
     return {
       teams: [],
@@ -95,6 +76,7 @@ export default {
       stats: [],
       currentWeek: 1,
       seasonId: null,
+      predictions: [],
     };
   },
   async created() {
@@ -149,6 +131,8 @@ export default {
         this.currentWeek = data.week;
         this.teams = data.teams;
         this.stats = data.stats;
+        
+        this.predictions = (await axios.get(`/api/seasons/${id}/predictions`)).data;
         this.matches = this.groupBy(data.matches, x => x.week - 1);
       } catch (error) {
         console.log(error);

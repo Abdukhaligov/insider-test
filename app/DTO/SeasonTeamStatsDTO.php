@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-class SeasonTeamStatsDTO
+final class SeasonTeamStatsDTO
 {
     public function __construct(
         public int   $teamId,

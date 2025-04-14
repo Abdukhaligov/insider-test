@@ -15,42 +15,42 @@ class TeamsTableSeeder extends Seeder
         $teams = [
             [
                 'name' => 'Liverpool',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'England',
             ],
             [
                 'name' => 'Manchester City',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'England',
             ],
             [
                 'name' => 'Chelsea',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'England',
             ],
             [
                 'name' => 'Arsenal',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'England',
             ],
             [
                 'name' => 'Real Madrid',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'Spain',
             ],
             [
                 'name' => 'Barcelona',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'Spain',
             ],
             [
                 'name' => 'Valencia',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'Spain',
             ],
             [
                 'name' => 'Milan',
-                'strength' => rand(100, 10000) / 100,
+                'strength' => rand(60, 95),
                 'country' => 'Italy',
             ],
         ];

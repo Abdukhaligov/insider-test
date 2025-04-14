@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 readonly final class SeasonService implements SeasonServiceInterface
 {
-    public function __construct(private SeasonRepositoryInterface $seasonRepository, private readonly MatchOrganizerServiceInterface $matchOrganizerService)
+    public function __construct(private SeasonRepositoryInterface $seasonRepository, 
+                                private MatchOrganizerServiceInterface $matchOrganizerService)
     {
         //
     }

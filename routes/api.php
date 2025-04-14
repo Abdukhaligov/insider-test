@@ -14,3 +14,5 @@ Route::prefix('seasons/{season}/simulate')->group(function () {
     Route::get('all-weeks', [SimulateController::class, 'allWeeks']);
     Route::get('reset', [SimulateController::class, 'reset']);
 });
+
+Route::get('seasons/{season}/predictions', [SeasonController::class, 'predictions']);

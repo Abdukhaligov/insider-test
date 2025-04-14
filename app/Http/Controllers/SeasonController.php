@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SeasonTeamsRequest;
 use App\Http\Resources\SeasonResource;
 use App\Models\Season;
+use App\Services\PredictionServiceInterface;
 use App\Services\SeasonServiceInterface;
 use Illuminate\Http\JsonResponse;
 
 class SeasonController extends Controller
 {
-    public function __construct(protected readonly SeasonServiceInterface $seasonService)
+    public function __construct(protected readonly SeasonServiceInterface $seasonService, 
+                                protected readonly PredictionServiceInterface $predictionService)
     {
         //
     }
@@ -30,5 +32,10 @@ class SeasonController extends Controller
     public function show(Season $season): JsonResponse
     {
         return response()->json(SeasonResource::make($season));
+    }
+    
+    public function predictions(Season $season): JsonResponse
+    {
+        return response()->json($this->predictionService->calculate($season));
     }
 }

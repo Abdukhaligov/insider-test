@@ -40,6 +40,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\SeasonServiceInterface::class,
             \App\Services\SeasonService::class
         );
+        
+        $this->app->bind(
+            \App\Services\PredictionServiceInterface::class,
+            \App\Services\PredictionService::class
+        );
     }
 
     /**
