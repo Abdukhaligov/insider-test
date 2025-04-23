@@ -38,6 +38,6 @@ readonly final class PredictionService implements PredictionServiceInterface
                 : 100 / max(1, $teams->count());
 
             return new TeamPredictionDTO($team->team->name, round($chance, 2));
-        })->sortByDesc('percentage')->values();
+        })->sortByDesc('name')->values();
     }
 }
