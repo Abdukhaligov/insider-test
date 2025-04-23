@@ -120,7 +120,7 @@ export default {
       }
 
       try {
-        const { data } = await axios.post('/api/seasons', { teams: this.selectedTeams });
+        const { data } = await axios.post('/api/seasons', this.selectedTeams);
         this.$router.push('/seasons/' + data.id);
       } catch (error) {
         console.error(error);

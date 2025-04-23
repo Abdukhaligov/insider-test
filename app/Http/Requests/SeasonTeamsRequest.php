@@ -10,8 +10,8 @@ class SeasonTeamsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'teams.*.id' => ['required', 'integer', 'exists:teams,id'],
-            'teams.*.strength' => ['required', 'numeric', 'between:0,100', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
+            '*.id' => ['required', 'integer', 'exists:teams,id'],
+            '*.strength' => ['required', 'numeric', 'between:0,100', 'regex:/^\d{1,3}(\.\d{1,2})?$/'],
         ];
     }
 
@@ -20,7 +20,7 @@ class SeasonTeamsRequest extends FormRequest
      */
     public function toDTOs(): array
     {
-        return collect($this->validated('teams'))
+        return collect($this->validated())
             ->map(fn($team) => new SeasonTeamStatsDTO(
                 teamId: $team['id'],
                 strength: $team['strength']
