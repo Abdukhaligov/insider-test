@@ -23,9 +23,9 @@ class SeasonResource extends JsonResource
                             return [
                                 'id' => $match->id,
                                 'week' => $match->week,
-                                'home_team' => $match->homeTeam->name,
+                                'home_team' => $match->homeTeam->team->name,
                                 'home_team_id' => $match->home_team_id,
-                                'away_team' => $match->awayTeam->name,
+                                'away_team' => $match->awayTeam->team->name,
                                 'away_team_id' => $match->away_team_id,
                                 'away_team_score' => $match->away_team_score,
                                 'home_team_score' => $match->home_team_score,

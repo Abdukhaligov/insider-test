@@ -88,7 +88,7 @@ final readonly class SeasonRepository implements SeasonRepositoryInterface
     {
         /** @var SeasonTeamStatsDTO $stat */
         foreach ($teams as $team) {
-            SeasonTeam::where('season_id', $season->id)->where('team_id', $team->teamId)->update([
+            SeasonTeam::where('season_id', $season->id)->where('id', $team->teamId)->update([
                 'won' => DB::raw("won + {$team->won}"),
                 'drawn' => DB::raw("drawn + {$team->drawn}"),
                 'lost' => DB::raw("lost + {$team->lost}"),

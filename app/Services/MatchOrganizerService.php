@@ -42,12 +42,12 @@ readonly final class MatchOrganizerService implements MatchOrganizerServiceInter
             $homeTeam = $teams->get($index);
             $awayTeam = $teams->get($teamCount - $index - 1);
 
-            if (!($homeTeam && $awayTeam && ($homeTeam->team_id !== $awayTeam->team_id))) continue;
+            if (!($homeTeam && $awayTeam && ($homeTeam->id !== $awayTeam->id))) continue;
 
             $this->matchRepository->create(
                 $season,
-                $week % 2 === 1 ? $homeTeam->team_id : $awayTeam->team_id,
-                $week % 2 === 1 ? $awayTeam->team_id : $homeTeam->team_id,
+                $week % 2 === 1 ? $homeTeam->id : $awayTeam->id,
+                $week % 2 === 1 ? $awayTeam->id : $homeTeam->id,
                 $week
             );
         }

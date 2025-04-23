@@ -28,7 +28,7 @@ class MatchOrganizerServiceTest extends TestCase
     /** @dataProvider teamCountProvider */
     public function test_generates_correct_number_of_matches(int $teamCount, int $expectedTotalMatches): void
     {
-        $teams = Collection::times($teamCount, fn($i) => (object)['team_id' => $i]);
+        $teams = Collection::times($teamCount, fn($i) => (object)['id' => $i]);
 
         $this->matchRepository
             ->shouldReceive('create')
@@ -48,7 +48,7 @@ class MatchOrganizerServiceTest extends TestCase
 
     public function test_home_away_alternates_based_on_week_parity(): void
     {
-        $teams = new Collection([(object)['team_id' => 1], (object)['team_id' => 2]]);
+        $teams = new Collection([(object)['id' => 1], (object)['id' => 2]]);
 
         // Expect 2 matches with alternating home/away
         $this->matchRepository
@@ -67,9 +67,9 @@ class MatchOrganizerServiceTest extends TestCase
     public function test_skip_matches_with_same_team(): void
     {
         $teams = new Collection([
-            (object)['team_id' => 1],
-            (object)['team_id' => 2],
-            (object)['team_id' => 3], // Middle team will pair with itself in some rounds
+            (object)['id' => 1],
+            (object)['id' => 2],
+            (object)['id' => 3], // Middle team will pair with itself in some rounds
         ]);
 
         // 3 teams = 6 weeks × 1 valid match/week = 6 total matches
@@ -83,17 +83,17 @@ class MatchOrganizerServiceTest extends TestCase
     public function test_team_rotation_logic(): void
     {
         $teams = new Collection([
-            (object)['team_id' => 1],
-            (object)['team_id' => 2],
-            (object)['team_id' => 3],
-            (object)['team_id' => 4],
+            (object)['id' => 1],
+            (object)['id' => 2],
+            (object)['id' => 3],
+            (object)['id' => 4],
         ]);
 
         $rotated1 = $this->invokePrivateMethod('rotateTeams', $teams);
-        $this->assertEquals([1, 3, 4, 2], $rotated1->pluck('team_id')->toArray());
+        $this->assertEquals([1, 3, 4, 2], $rotated1->pluck('id')->toArray());
 
         $rotated2 = $this->invokePrivateMethod('rotateTeams', $rotated1);
-        $this->assertEquals([1, 4, 2, 3], $rotated2->pluck('team_id')->toArray());
+        $this->assertEquals([1, 4, 2, 3], $rotated2->pluck('id')->toArray());
     }
 
     private function invokePrivateMethod(string $methodName, Collection $teams): Collection

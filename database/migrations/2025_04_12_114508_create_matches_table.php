@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('season_id')->constrained()->onDelete('cascade');
             $table->integer('week');
-            $table->foreignId('home_team_id')->nullable()->constrained('teams')->nullOnDelete();
-            $table->foreignId('away_team_id')->nullable()->constrained('teams')->nullOnDelete();
+            $table->foreignId('home_team_id')->nullable()->constrained('season_teams')->nullOnDelete();
+            $table->foreignId('away_team_id')->nullable()->constrained('season_teams')->nullOnDelete();
             $table->integer('home_team_score')->nullable();
             $table->integer('away_team_score')->nullable();
             $table->enum('status', ['scheduled', 'completed', 'postponed', 'canceled'])->default('scheduled');

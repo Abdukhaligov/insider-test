@@ -27,11 +27,11 @@ class Game extends Model
 
     public function homeTeam(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Team::class, 'home_team_id');
+        return $this->belongsTo(SeasonTeam::class, 'home_team_id');
     }
 
     public function awayTeam(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Team::class, 'away_team_id');
+        return $this->belongsTo(SeasonTeam::class, 'away_team_id');
     }
 }
