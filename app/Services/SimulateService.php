@@ -38,6 +38,7 @@ readonly final class SimulateService implements SimulateServiceInterface
             $teamStats = collect();
             $season->load('teams');
 
+            //TODO:: can be refactored, to use upsert for single query
             foreach ($matches as $match) {
                 $scores = self::calculateMatchScore(
                     $match->homeTeam->strength,
@@ -97,8 +98,8 @@ readonly final class SimulateService implements SimulateServiceInterface
         $homeEffective = max(1, $homeStrength * 1.15);
         $awayEffective = max(1, $awayStrength);
 
-        // Calculate total match attacks (base 20-30)
-        $totalAttacks = rand(20, 30);
+        // Calculate total match attacks (base 40-70)
+        $totalAttacks = rand(40, 70);
         $strengthSum = $homeEffective + $awayEffective;
 
         // Distribute attacks between teams based on relative strength
@@ -108,11 +109,20 @@ readonly final class SimulateService implements SimulateServiceInterface
         // Calculate scoring probabilities with defense factor
         $baseConversion = 0.22; // Base 22% conversion rate
 
+        $awayAttackStrength = $awayEffective;
+        $homeAttackStrength = $homeEffective * 1.1; // Home attacking bonus
+
+        $homeDefenseStrength = $homeEffective * 1.1; // Home defense bonus
+        $awayDefenseStrength = $awayEffective * 0.9; // Away defense penalty
+        
+        $homeAttackSquared = pow($homeAttackStrength, 2);
+        $awayAttackSquared = pow($awayAttackStrength, 2);
+        $homeDefenseSquared = pow($homeDefenseStrength, 2);
+        $awayDefenseSquared = pow($awayDefenseStrength, 2);
+
         // Home team attacks
         foreach (range(1, $homeAttacks) as $i) {
-            $attackStrength = $homeEffective * 1.1; // Home attacking bonus
-            $defenseStrength = $awayEffective * 0.9; // Away defense penalty
-            $chance = ($attackStrength / ($attackStrength + $defenseStrength)) * $baseConversion * 100;
+            $chance = ($homeAttackSquared / ($homeAttackSquared + $awayDefenseSquared)) * $baseConversion * 100;
 
             if (rand(1, 100) <= $chance) {
                 $homeGoals++;
@@ -121,8 +131,7 @@ readonly final class SimulateService implements SimulateServiceInterface
 
         // Away team attacks
         foreach (range(1, $awayAttacks) as $i) {
-            $defenseStrength = $homeEffective * 1.1; // Home defense bonus
-            $chance = ($awayEffective / ($awayEffective + $defenseStrength)) * $baseConversion * 100;
+            $chance = ($awayAttackSquared / ($awayAttackSquared + $homeDefenseSquared)) * $baseConversion * 100;
 
             if (rand(1, 100) <= $chance) {
                 $awayGoals++;
